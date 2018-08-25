@@ -11,7 +11,7 @@ api = Api(app)
 jwt = JWT(app, authenticate, identity)
 
 items = []
-
+  
 
 class Item(Resource):
 	parser = reqparse.RequestParser()
