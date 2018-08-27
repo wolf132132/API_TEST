@@ -18,7 +18,7 @@ class User:
     def find_by_username(cls, username):
         connection = sqlite3.connect('database.db')
         cursor = connection.cursor()
-        select_query = "SELECT FROM users WHERE username=?"
+        select_query = "SELECT * FROM users WHERE username=?"
         result = cursor.execute(select_query, (username,))
         #this is going to return first row
         row = result.fetchone()

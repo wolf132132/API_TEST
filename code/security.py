@@ -20,7 +20,6 @@ user_id_mapping = {
 }
 """
 
-
 def authenticate(username, password):
     user = User.find_by_username(username)
     if safe_str_cmp(user.password, password):
