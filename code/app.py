@@ -12,6 +12,10 @@ app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.secret_key = 'zirong'
 api = Api(app)
 
+@app.before_first_request
+def create_table():
+    db.create_all()
+
 #JWT creates an end point, which is /auth
 jwt = JWT(app, authenticate, identity)
 
