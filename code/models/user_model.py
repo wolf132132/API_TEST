@@ -8,10 +8,13 @@ class UserModel(db.Model):
     username = db.Column(db.String(80))
     password = db.Column(db.String(80))
 
-    def __init__(self, _id, username, password):
-        self.id = _id
+    def __init__(self, username, password):
         self.username = username
         self.password = password
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
     """
     create the connection
@@ -21,32 +24,9 @@ class UserModel(db.Model):
     """
     @classmethod
     def find_by_username(cls, username):
-        connection = sqlite3.connect('database.db')
-        cursor = connection.cursor()
-        select_query = "SELECT * FROM users WHERE username=?"
-        result = cursor.execute(select_query, (username,))
-        #this is going to return first row
-        row = result.fetchone()
-        if row is not None:
-            user = cls(row[0], row[1], row[2])
-        else:
-            user = None
-
-        connection.close()
-        return user
+        return cls.query.filter_by(username=username).first()
 
     @classmethod
     def find_by_id(cls, _id):
-        connection = sqlite3.connect('database.db')
-        cursor = connection.cursor()
-        select_query = "SELECT  * FROM users WHERE id=?"
-        result = cursor.execute(select_query, (_id,))
-        row = result.fetchone()
-        if row is not None:
-            user = cls(row[0], row[1], row[2])
-        else:
-            user = None
-
-        connection.close()
-        return user
+        return cls.query.filter_by(id=_id).first()
 
