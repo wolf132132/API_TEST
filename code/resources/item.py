@@ -27,31 +27,29 @@ class Item(Resource):
 		# force=True means no content-header type required
 		item = ItemModel(name, data['price'])
 		try:
-			ItemModel.insert(item)
+			ItemModel.save_to_db(item)
 		except:
 			return {'message': 'An internal error occurs'}, 500
 		return item.json(), 201
 
 	def delete(self, name):
-		connection = sqlite3.connect('database.db')
-		cursor = connection.cursor()
-		query = "DELETE FROM items WHERE name=?"
-		cursor.execute(query, (name,))
-		connection.commit()
-		connection.close()
-
-		return {'message': 'item has been deleted'}
+		item = ItemModel.find_by_name(name)
+		if item:
+			item.delete_from_db()
+		return {'message': 'deleted from db'}
 
 	def put(self, name):
 		data = Item.parser.parse_args()
 		item = ItemModel.find_by_name(name)
-		updated_item = ItemModel(name, data['price'])
 
 		if item is None:
-			updated_item.insert()
+			item = ItemModel(name, data['price'])
 		else:
-			updated_item.update()
-		return updated_item.json()
+			item.price = data['price']
+
+		item.save_to_db()
+
+		return item.json()
 
 
 class ItemList(Resource):
